@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="/static/style.css">
+    
+    <title>Text Summarization Tool</title>
+</head>
+
+<body>
+    <h1>Text Summarization Tool</h1>
+
+    <!-- Container chính chia 2 phần -->
+    <div class="container">
+        <!-- Cột bên trái - phần nhập văn bản và chọn model -->
+        <div class="input-section">
+            <form action="/summarize" id="upload-form" method="post" enctype="multipart/form-data">
+                <textarea name="text" rows="10" cols="50" placeholder="Nhập đoạn văn bản tại đây...">{{ request.form.text if request.form.text else "" }}</textarea><br><br>
+
+                <!-- Thanh trượt để chọn số lượng câu tóm tắt -->
+                <label for="num_sentences">Số lượng từ tóm tắt: </label>
+                <input type="range"  id="num_sentences" name="num_sentences" min="1" max="10" value="{{ request.form.num_sentences if request.form.num_sentences else 3 }}" oninput="this.nextElementSibling.value = this.value">
+                <output>{{ request.form.num_sentences if request.form.num_sentences else 3 }}</output>
+
+                <br><br>
+                
+                <!-- Tải file -->
+                <label for="file" class="custom-file-label">Tải lên file văn bản (.docx, .pdf, .txt):</label>
+                <br><br>
+                <input class="tool" type="file" id="file" name="file" accept=".docx,.pdf,.txt">
+                <br><br>
+
+                <!-- Dropdown chọn ngôn ngữ -->
+                <label for="language">Chọn ngôn ngữ:</label>
+                <select class = "tool" id="language" name="language">
+                    <option value="vietnamese" {% if request.form.language == "vietnamese" %}selected{% endif %}>Tiếng Việt</option>
+                    <option value="english" {% if request.form.language == "english" %}selected{% endif %}>English</option>
+                </select>
+
+                <br><br>
+
+                <!-- Dropdown chọn mô hình -->
+                <label for="model">Chọn mô hình tóm tắt:</label><br>
+                <select class = "tool" id="model" name="model">
+                    <option value="tf_idf" {% if request.form.model == "tf_idf" %}selected{% endif %}>TF-IDF</option>
+                    <option value="bert" {% if request.form.model == "bert" %}selected{% endif %}>BERT</option>
+                </select>
+
+                <br><br>
+                <input type="submit" value="Tóm tắt" id="submit-btn">
+            </form>
+        </div>
+
+        <!-- Cột bên phải - phần hiển thị kết quả tóm tắt -->
+        <div class="output-section">
+            {% if summary %}
+                <h2>Kết quả tóm tắt:</h2>
+                <p>{{ summary }}</p>
+            {% endif %}
+            
+            {% if error %}
+                <h2>Lỗi:</h2>
+                <p>{{ error }}</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

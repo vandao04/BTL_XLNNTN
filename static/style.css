@@ -1,0 +1,111 @@
+/* Định dạng chung cho trang */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 20px;
+    background-color: #f4f4f9;
+    
+}
+
+h1 {
+    text-align: center;
+    color: #333; 
+    margin-bottom: 20px; 
+}
+
+/* Định dạng container chính */
+.container {
+    display: flex;
+    justify-content: space-between;
+    gap: 20px;
+    
+}
+
+/* Định dạng cho cột bên trái (input) */
+.input-section {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+}
+
+/* Định dạng cho cột bên phải (output) */
+.output-section {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    background-color: #f9f9f9;
+}
+
+/* Định dạng cho form */
+form {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch; /* Đảm bảo các phần tử chiếm hết chiều rộng khung */
+}
+
+/* Định dạng cho textarea */
+textarea {
+    width: 97%; /* Chiếm toàn bộ chiều rộng khung bên trái */
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    resize: vertical; /* Cho phép kéo dài chiều cao nhưng không cho phép kéo rộng chiều ngang */
+}
+
+/* Định dạng cho các thẻ input và select */
+input[type="range"],
+input[type="file"],
+select {
+    width: 100%; /* Đặt chiều rộng là 100% */
+    max-width: 300px; /* Đặt giới hạn chiều rộng tối đa */
+    margin-bottom: 10px;
+}
+
+/* Định dạng cho button */
+input[type="submit"] {
+    padding: 10px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    width: 300px; /* Đặt chiều rộng cho nút */
+    margin: 10px auto; /* Căn giữa nút */
+    font-weight: bold; 
+    font-size: 16px;
+    
+}
+
+input[type="submit"]:hover {
+    background-color: #45a049;
+}
+
+/* Định dạng cho output */
+.output-section h2 {
+    margin-top: 0;
+}
+
+/* Điều chỉnh cho các thành phần có class "tool" */
+.tool {
+    font-size: 16px;
+    height: 30px;
+    width: 15%; /* Đặt chiều rộng là 100% để các thành phần sử dụng không gian tối đa */
+    max-width: 300px; /* Giới hạn chiều rộng tối đa */
+    
+}
+label{
+    
+    font-weight: bold; /* Làm cho text label đậm hơn */
+}
+#model{
+    margin-top: -15px;
+}
+#file{
+    margin-top: -30px;
+    
+}
+#language{
+    margin-top: 5px;
+}
