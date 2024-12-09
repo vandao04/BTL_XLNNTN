@@ -1,16 +1,28 @@
 document.addEventListener('DOMContentLoaded', function () {
-    const form = document.querySelector('form');
-    
-    form.addEventListener('submit', function (event) {
-        const textArea = document.querySelector('textarea[name="text"]');
-        
-        // Kiểm tra xem người dùng đã nhập văn bản chưa
-        if (!textArea.value.trim()) {
-            alert('Vui lòng nhập một đoạn văn bản để tóm tắt.');
-            event.preventDefault(); // Ngăn không cho gửi biểu mẫu
-        } else {
-            // Thông báo khi bắt đầu tóm tắt
-            alert('Đang tóm tắt văn bản...');
-        }
+    // 1. Hiển thị số lượng câu tóm tắt theo giá trị thanh trượt
+    const numSentencesSlider = document.getElementById('num_sentences');
+    const numSentencesOutput = numSentencesSlider.nextElementSibling;
+    numSentencesOutput.textContent = numSentencesSlider.value;
+
+    numSentencesSlider.addEventListener('input', function () {
+        numSentencesOutput.textContent = numSentencesSlider.value;
     });
+
+    // 2. Xử lý sự kiện tải lên file
+    const fileInput = document.getElementById('file');
+    const fileLabel = document.querySelector('.custom-file-label');
+
+    fileInput.addEventListener('change', function () {
+        const fileName = fileInput.files[0] ? fileInput.files[0].name : 'Chưa chọn file';
+        fileLabel.textContent = fileName;
+    });
+
+    // 3. Xử lý hiển thị kết quả tóm tắt hoặc lỗi
+    const summarySection = document.querySelector('.output-section');
+    if (summarySection) {
+        const errorMessage = summarySection.querySelector('p');
+        if (errorMessage && errorMessage.textContent.includes('Lỗi:')) {
+            alert('Có lỗi xảy ra khi tóm tắt văn bản. Vui lòng thử lại!');
+        }
+    }
 });

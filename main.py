@@ -63,12 +63,12 @@ def summarize():
             if model_choice == 'tf_idf':
                 summary = tf_idf_model.summarize_text_vietnamese(text, num_sentences)
             else:
-                summary = bert_model.summarize_text_vietnamese_bert(text, num_sentences)
+                summary = bert_model.summarize_text_bert(text, num_sentences)
         else:
             if model_choice == 'tf_idf':
                 summary = tf_idf_model.summarize_text_english(text, num_sentences)
             else:
-                summary = bert_model.summarize_text_english_bert(text, num_sentences)
+                summary = bert_model.summarize_text_bert(text, num_sentences)
     except Exception as e:
         return render_template('index.html', error=f"Đã xảy ra lỗi khi tóm tắt: {str(e)}",
                                text=text, num_sentences=num_sentences, language=language, model=model_choice)

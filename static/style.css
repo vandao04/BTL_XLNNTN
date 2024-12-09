@@ -18,7 +18,7 @@ h1 {
     display: flex;
     justify-content: space-between;
     gap: 20px;
-    
+    flex-wrap: wrap;
 }
 
 /* Định dạng cho cột bên trái (input) */
@@ -27,6 +27,8 @@ h1 {
     padding: 10px;
     border: 1px solid #ccc;
     border-radius: 5px;
+    background-color: #ffffff;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Định dạng cho cột bên phải (output) */
@@ -36,6 +38,7 @@ h1 {
     border: 1px solid #ccc;
     border-radius: 5px;
     background-color: #f9f9f9;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 
 /* Định dạng cho form */
@@ -52,6 +55,8 @@ textarea {
     border: 1px solid #ccc;
     border-radius: 5px;
     resize: vertical; /* Cho phép kéo dài chiều cao nhưng không cho phép kéo rộng chiều ngang */
+    line-height: 1.1;
+    font-size: 16px;
 }
 
 /* Định dạng cho các thẻ input và select */

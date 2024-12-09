@@ -1,27 +1,16 @@
 #--------------Thư viện--------------
-from pyvi import ViTokenizer
-import nltk
-from nltk.corpus import stopwords
-from nltk.tokenize import word_tokenize, sent_tokenize
+from nltk.tokenize import  sent_tokenize
 import re
 import numpy as np
 from transformers import BertTokenizer, BertModel
 import torch
+from sklearn.metrics.pairwise import cosine_similarity
 
-#--------------Tải bộ stopwords tiếng Anh từ nltk--------------
-nltk.download('stopwords')
-nltk.download('punkt')
-english_stopwords = set(stopwords.words('english'))
 
-#--------------Hàm đọc danh sách stopwords --------------
-def load_stopwords(filepath):
-    with open(filepath, "r", encoding="utf-8") as f:
-        stopwords = set(word.strip() for word in f.read().splitlines())  
-    return stopwords
-#--------------Đọc file stopwords tiếng Việt--------------
-vietnamese_stopwords = load_stopwords("vietnamese-stopwords-dash.txt")
+
 
 #--------------Hàm tính toán vector BERT cho mỗi câu--------------
+device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 def get_bert_embeddings(sentences):
     # Tải bộ tokenizer và mô hình BERT đa ngôn ngữ đã được huấn luyện sẵn
     tokenizer = BertTokenizer.from_pretrained('bert-base-multilingual-cased')
@@ -44,63 +33,72 @@ def get_bert_embeddings(sentences):
     return np.vstack(embeddings)
 
 #--------------Hàm tiền xử lý văn bản tiếng Việt--------------
-def preprocess_text_vietnamese(text):
+def preprocess_text(text):
+    text = re.sub(r'[^\w\s.,!?]', '', text, flags=re.UNICODE)  # Loại bỏ ký tự đặc biệt như @, -,*
     text = re.sub(r'\s+', ' ', text).strip() # loại bỏ khoảng trắng thừa
-    text = text.lower()                      # chuyển toàn bộ văn bản về chữ thường   
-    text = ViTokenizer.tokenize(text)        # tách từ trong văn bản tiếng Việt bằng thư viện ViTokenizer
-    words = text.split()                     # tách văn bản thành từng từ
+    words = text.lower()                      # chuyển toàn bộ văn bản về chữ thường   
 
-    # Loại bỏ stopwords
-    filtered_words = [word for word in words if word not in vietnamese_stopwords and word.isalnum()]
     # Ghép các từ thành đoạn văn hoàn chỉnh
-    return ' '.join(filtered_words)
+    return words
 
 
 
 #--------------Hàm tóm tắt văn bản tiếng Việt sử dụng BERT--------------
-def summarize_text_vietnamese_bert(text, num_sentences=3):
+def summarize_text_bert(text, max_sentences=3):
     # Tách văn bản thành các câu
     sentences = sent_tokenize(text)
 
     #Nếu số câu nhỏ hơn hoặc bằng 'max_sentences', trả về toàn bộ văn bản
-    if len(sentences) <= num_sentences:
-        return text
+    if len(sentences) <= max_sentences:
+        return sentences
+        
     
+    # Tiền xử lý từng câu
+    sentences = [preprocess_text(sentence) for sentence in sentences]
+
     # Lấy embeddings cho từng câu sử dụng BERT
     embeddings = get_bert_embeddings(sentences)
 
     # Tính độ dài Euclidean (norm) của mỗi câu để đánh giá độ quan trọng
-    sentence_scores = np.linalg.norm(embeddings, axis=1)
+    similarity_matrix = cosine_similarity(embeddings)
+    norm_scores = np.linalg.norm(embeddings, axis=1)
+    sentence_scores = norm_scores + similarity_matrix.sum(axis=1)
 
     # Sắp xếp các câu theo độ dài norm giảm dần và chọn num_sentences câu quan trọng nhất
-    ranked_indices = sentence_scores.argsort()[::-1][:num_sentences].astype(int)
+    ranked_indices = sentence_scores.argsort()[::-1][:max_sentences].astype(int)
 
     # Lấy ra các câu có điểm số cao nhất
     ranked_sentences = [sentences[i] for i in ranked_indices]
+    
+    # Giữ nguyên thứ tự xuất hiện ban đầu của các câu đã chọn
+    ranked_sentences.sort(key=lambda x: sentences.index(x))
 
     # Ghép các câu lại thành một văn bản
-    return ". ".join(ranked_sentences)
-
-#--------------Hàm tiền xử lý văn bản tiếng Anh--------------
-def preprocess_text_english(text):
-    text = re.sub(r'\s+', ' ', text).strip()
-    text = text.lower()  
-    words = word_tokenize(text)  
-    filtered_words = [word for word in words if word not in english_stopwords and word.isalnum()]  
-    return ' '.join(filtered_words)
-
-
-#--------------Hàm tóm tắt văn bản tiếng Anh sử dụng BERT--------------
-def summarize_text_english_bert(text, num_sentences=3):
-
-    sentences = sent_tokenize(text)
-    if len(sentences) <= num_sentences:
-        return text
     
-    embeddings = get_bert_embeddings(sentences)
-    sentence_scores = np.linalg.norm(embeddings, axis=1)
+    return " ".join(ranked_sentences)
+            
+        
+
+
+# #--------------Hàm tóm tắt văn bản tiếng Anh sử dụng BERT--------------
+# def summarize_text_english_bert(text, max_sentences=3):
+
+#     sentences = sent_tokenize(text)
+#     if len(sentences) <= max_sentences:
+#         return sentences
+        
     
-    ranked_indices = sentence_scores.argsort()[::-1][:num_sentences].astype(int)
-    ranked_sentences = [sentences[i] for i in ranked_indices]
+#     sentences = [preprocess_text(sentence) for sentence in sentences]
+
+#     embeddings = get_bert_embeddings(sentences)
+
+#     similarity_matrix = cosine_similarity(embeddings)
+#     norm_scores = np.linalg.norm(embeddings, axis=1)
+#     sentence_scores = norm_scores + similarity_matrix.sum(axis=1)
     
-    return ". ".join(ranked_sentences)
+#     ranked_indices = sentence_scores.argsort()[::-1][:max_sentences].astype(int)
+#     ranked_sentences = [sentences[i] for i in ranked_indices]
+    
+#     return ". ".join(ranked_sentences)
+
+

@@ -19,9 +19,9 @@
                 <textarea name="text" rows="10" cols="50" placeholder="Nhập đoạn văn bản tại đây...">{{ request.form.text if request.form.text else "" }}</textarea><br><br>
 
                 <!-- Thanh trượt để chọn số lượng câu tóm tắt -->
-                <label for="num_sentences">Số lượng từ tóm tắt: </label>
-                <input type="range"  id="num_sentences" name="num_sentences" min="1" max="10" value="{{ request.form.num_sentences if request.form.num_sentences else 3 }}" oninput="this.nextElementSibling.value = this.value">
-                <output>{{ request.form.num_sentences if request.form.num_sentences else 3 }}</output>
+                <label for="num_sentences">Số lượng câu tóm tắt: </label>
+                <input type="range"  id="num_sentences" name="num_sentences" min="5" max="40" value="{{ request.form.num_sentences if request.form.num_sentences else 10 }}" oninput="this.nextElementSibling.value = this.value">
+                <output>{{ request.form.num_sentences if request.form.num_sentences else 10 }}</output>
 
                 <br><br>
                 
@@ -66,4 +66,6 @@
         </div>
     </div>
 </body>
+<script src="static\script.js"></script>
+
 </html>

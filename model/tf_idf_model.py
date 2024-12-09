@@ -22,6 +22,7 @@ vietnamese_stopwords = load_stopwords("vietnamese-stopwords-dash.txt")
 
 # --------------Hàm tiền xử lý văn bản tiếng Việt--------------
 def preprocess_text_vietnamese(text):
+    text = re.sub(r'[^\w\s.,!?]', '', text)      # Loại bỏ ký tự đặc biệt như @, -, *
     text = re.sub(r'\s+', ' ', text).strip() # loại bỏ khoảng trắng thừa
     text = text.lower()                      # chuyển toàn bộ văn bản về chữ thường   
     text = ViTokenizer.tokenize(text)        # tách từ trong văn bản tiếng Việt bằng thư viện ViTokenizer
@@ -65,6 +66,7 @@ def summarize_text_vietnamese(text, max_sentences=3):
 
 #--------------Hàm tiền xử lý văn bản tiếng Anh--------------
 def preprocess_text_english(text):
+    text = re.sub(r'[^\w\s.,!?]', '', text)      
     text = re.sub(r'\s+', ' ', text).strip()
     text = text.lower()
     words = word_tokenize(text)
