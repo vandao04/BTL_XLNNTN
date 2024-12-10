@@ -41,10 +41,8 @@ def preprocess_text(text):
     # Ghép các từ thành đoạn văn hoàn chỉnh
     return words
 
-
-
 #--------------Hàm tóm tắt văn bản tiếng Việt sử dụng BERT--------------
-def summarize_text_bert(text, max_sentences=3):
+def summarize_text_bert(text, max_sentences=10):
     # Tách văn bản thành các câu
     sentences = sent_tokenize(text)
 
@@ -79,26 +77,5 @@ def summarize_text_bert(text, max_sentences=3):
             
         
 
-
-# #--------------Hàm tóm tắt văn bản tiếng Anh sử dụng BERT--------------
-# def summarize_text_english_bert(text, max_sentences=3):
-
-#     sentences = sent_tokenize(text)
-#     if len(sentences) <= max_sentences:
-#         return sentences
-        
-    
-#     sentences = [preprocess_text(sentence) for sentence in sentences]
-
-#     embeddings = get_bert_embeddings(sentences)
-
-#     similarity_matrix = cosine_similarity(embeddings)
-#     norm_scores = np.linalg.norm(embeddings, axis=1)
-#     sentence_scores = norm_scores + similarity_matrix.sum(axis=1)
-    
-#     ranked_indices = sentence_scores.argsort()[::-1][:max_sentences].astype(int)
-#     ranked_sentences = [sentences[i] for i in ranked_indices]
-    
-#     return ". ".join(ranked_sentences)
 
 
